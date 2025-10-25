@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pocket Classroom</title>
+
+  <!-- Bootstrap CSS (CDN) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom styles -->
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+  body {
+    background-color: #001233;
+    color: white; 
+  }
+</style>
+</head>
+
+<body>
+  <!-- Sticky navbar -->
+  <nav class="navbar sticky-top navbar-light bg-white shadow-sm">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="#">Pocket Classroom</a>
+      <div>
+        <button class="btn btn-sm btn-outline-primary me-1" data-route="library">Library</button>
+        <button class="btn btn-sm btn-outline-secondary me-1" data-route="author">Author</button>
+        <button class="btn btn-sm btn-outline-success" data-route="learn">Learn</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container my-4">
+    <!-- Library -->
+    <section id="librarySection" class="">
+      <!-- Top actions -->
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Library</h2>
+        <div>
+          <button id="btnNew" class="btn btn-primary btn-sm">New Capsule</button>
+          <label class="btn btn-outline-secondary btn-sm mb-0">
+            Import JSON <input id="fileImport" type="file" accept="application/json" hidden>
+          </label>
+        </div>
+      </div>
+      <div id="libraryGrid" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3"></div>
+      <div id="libraryEmpty" class="text-center text-muted mt-5 d-none">
+        <p>No capsules yet. Click "New Capsule" to create one or import a JSON file.</p>
+      </div>
+    </section>
+
+    <!-- Author -->
+    <section id="authorSection" class="d-none">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 id="authorTitle">Author</h2>
+        <div>
+          <button id="btnSaveCapsule" class="btn btn-success btn-sm">Save</button>
+          <button id="btnCancelAuthor" class="btn btn-outline-secondary btn-sm">Cancel</button>
+        </div>
+      </div>
+
+      <form id="authorForm" class="mb-4">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Title *</label>
+            <input id="metaTitle" class="form-control" required>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Subject</label>
+            <input id="metaSubject" class="form-control">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Level</label>
+            <select id="metaLevel" class="form-select">
+              <option>Beginner</option>
+              <option>Intermediate</option>
+              <option>Advanced</option>
+            </select>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Description</label>
+            <textarea id="metaDesc" class="form-control" rows="2"></textarea>
+          </div>
+        </div>
+      </form>
+
+      <!-- Notes -->
+      <div class="mb-3">
+        <div class="d-flex justify-content-between align-items-baseline">
+          <h5>Notes</h5>
+          <small class="text-muted">One note per line</small>
+        </div>
+        <textarea id="notesEditor" class="form-control" rows="4" placeholder="Line 1&#10;Line 2"></textarea>
+      </div>
+
+      <!-- Flashcards -->
+      <div class="mb-3">
+        <div class="d-flex justify-content-between align-items-center">
+          <h5>Flashcards</h5>
+          <button id="btnAddFlashcard" class="btn btn-outline-primary btn-sm">Add Flashcard</button>
+        </div>
+        <div id="flashcardsEditor" class="mt-2"></div>
+      </div>
+
+      <!-- Quiz -->
+      <div class="mb-5">
+        <div class="d-flex justify-content-between align-items-center">
+          <h5>Quiz</h5>
+          <button id="btnAddQuestion" class="btn btn-outline-primary btn-sm">Add Question</button>
+        </div>
+        <div id="quizEditor" class="mt-2"></div>
+      </div>
+    </section>
+
+    <!-- Learn -->
+    <section id="learnSection" class="d-none">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 id="learnTitle">Learn</h2>
+        <div>
+          <select id="capsuleSelect" class="form-select form-select-sm"></select>
+          <button id="btnExport" class="btn btn-outline-secondary btn-sm ms-2">Export</button>
+        </div>
+      </div>
+
+      <div id="learnMeta" class="mb-3"></div>
+
+      <ul class="nav nav-tabs" id="learnTabs" role="tablist">
+        <li class="nav-item"><button class="nav-link active" data-tab="notes">Notes</button></li>
+        <li class="nav-item"><button class="nav-link" data-tab="flashcards">Flashcards</button></li>
+        <li class="nav-item"><button class="nav-link" data-tab="quiz">Quiz</button></li>
+      </ul>
+
+      <div id="learnContent" class="mt-3">
+        <div id="notesView" class="tabView">
+          <div class="mb-2 d-flex">
+            <input id="notesSearch" class="form-control form-control-sm me-2" placeholder="Search notes...">
+            <div id="notesCount" class="text-muted small"></div>
+          </div>
+          <ol id="notesList" class="list-group list-group-numbered"></ol>
+        </div>
+
+        <div id="flashcardsView" class="tabView d-none">
+          <div class="d-flex align-items-center mb-2">
+            <button id="fcPrev" class="btn btn-sm btn-outline-secondary me-2">Prev</button>
+            <button id="fcNext" class="btn btn-sm btn-outline-secondary me-2">Next</button>
+            <button id="fcKnown" class="btn btn-sm btn-success me-2">Known</button>
+            <button id="fcUnknown" class="btn btn-sm btn-outline-danger me-2">Unknown</button>
+            <div id="fcCounters" class="ms-auto small text-muted"></div>
+          </div>
+          <div id="flashcardShell" class="d-flex justify-content-center align-items-center">
+            <!-- dynamic card -->
+          </div>
+        </div>
+
+        <div id="quizView" class="tabView d-none">
+          <div id="quizShell"></div>
+          <div id="quizResult" class="mt-3 d-none"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
